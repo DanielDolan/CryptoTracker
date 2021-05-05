@@ -88,7 +88,7 @@ PyHamcrest==2.0.2
 pylint==2.5.3
 pyOpenSSL==19.1.0
 pyparsing==2.4.7
-pypiwin32==223
+# pypiwin32==223
 pyrsistent==0.16.0
 pytest==5.4.3
 pytest-cache==1.0
