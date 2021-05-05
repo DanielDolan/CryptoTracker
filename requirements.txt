@@ -95,7 +95,7 @@ pytest-cache==1.0
 python-dateutil==2.8.1
 python-dotenv==0.14.0
 pytz==2020.1
-pywin32==228
+# pywin32==228
 pyzmq==19.0.1
 requests==2.24.0
 retrying==1.3.3
