@@ -32,14 +32,21 @@ params = {
 
 url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 
-# json = requests.get(url, params=params, headers=headers).json()
+json = requests.get(url, params=params, headers=headers).json()
 
 
-# cryptodata =json['data']
+cryptodata2 =json['data']
 
 # for x in cryptodata:
 #     crydata=[x['symbol'], x['quote']['USD']['price']]
-
+dfline=pd.json_normalize(cryptodata2) 
+df2=dfline[['name', 'symbol','quote.USD.percent_change_24h','quote.USD.last_updated']]
+fig = go.Figure() # or any Plotly Express function e.g. px.bar(...)
+fig.add_trace(go.Line(x=df2['name'],
+							y=df2['quote.USD.percent_change_24h'],
+							name="24 hour graph ",
+							marker_color='rgb(162,162,162)'
+							 ))
 
 app = dash.Dash(__name__)
 server = app.server
@@ -56,6 +63,8 @@ server = app.server
 # df1=df[['name', 'symbol','quote.USD.price']]
 # print(df1)
 #---------------------------------------------------------------
+def format(x):
+    return "${:,.4f}".format(x)
 def serve_layout():
     json = requests.get(url, params=params, headers=headers).json()
 
@@ -65,9 +74,10 @@ def serve_layout():
     for x in cryptodata:
         crydata=[x['symbol'], x['quote']['USD']['price']]
     df=pd.json_normalize(cryptodata) 
-    df1=df[['name', 'symbol','quote.USD.price']]
+   
+    df1=df[['name', 'symbol','quote.USD.price','quote.USD.last_updated','quote.USD.percent_change_24h']]
+    df1['quote.USD.price']=df1['quote.USD.price'].apply(format)
     return html.Div([
-    html.A(html.Button('Refresh Data'),href='/'),
     html.Div([
         dt.DataTable(
             id='dt1',
@@ -101,9 +111,11 @@ def serve_layout():
             ],
         ),
     ],className='row'),
-    html.H1('The time is: ' + str(datetime.datetime.now()))
-    # html.Button('Refresh Data', id='button'),
-    # html.Div(id="div-1"),
+    html.A(html.Button('Refresh Data'),href='/'),
+    html.H2('The time is: ' + str(datetime.datetime.now())),
+    dcc.Graph(figure=fig)
+    
+
 
     # html.Div([
     #     html.Div([
