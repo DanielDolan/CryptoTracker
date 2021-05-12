@@ -113,98 +113,55 @@ def serve_layout():
     ],className='row'),
     html.A(html.Button('Refresh Data'),href='/'),
     html.H2('The time is: ' + str(datetime.datetime.now())),
-    dcc.Graph(figure=fig)
+    html.Div([html.P(),
+			html.H5('Chose Range of Change'),
+			dcc.Dropdown(
+			id='slct_range',
+			options=[ {'label': '1 Hour', 'value': 1},
+			{'label': '24 hour', 'value': 24},
+			{'label': '7 day', 'value': '7d'},
+			{'label': '30 day', 'value': '30d'},
+			{'label': '60 day', 'value': '60d'},
+			{'label': '90 day', 'value': '90d'}],
+			value=1,
+			multi=False,
+			className="innerdropdown"
+					) 
+                     
+		]),
+        html.Div(dcc.Graph(id='our_graph',style={
+			'height': 700
+        }))
     
-
-
-    # html.Div([
-    #     html.Div([
-    #         dcc.Dropdown(id='linedropdown',
-    #             options=[
-    #                      {'label': 'Deaths', 'value': 'deaths'},
-    #                      {'label': 'Cases', 'value': 'cases'}
-    #             ],
-    #             value='deaths',
-    #             multi=False,
-    #             clearable=False
-    #         ),
-    #     ],className='six columns'),
-
-    #     html.Div([
-    #     dcc.Dropdown(id='piedropdown',
-    #         options=[
-    #                  {'label': 'Deaths', 'value': 'deaths'},
-    #                  {'label': 'Cases', 'value': 'cases'}
-    #         ],
-    #         value='cases',
-    #         multi=False,
-    #         clearable=False
-    #     ),
-    #     ],className='six columns'),
-
-    # ],className='row'),
-
-    # html.Div([
-    #     html.Div([
-    #         dcc.Graph(id='linechart'),
-    #     ],className='six columns'),
-
-    #     html.Div([
-    #         dcc.Graph(id='piechart'),
-    #     ],className='six columns'),
-
-    # ],className='row'),
 
 
 ])
 app.layout = serve_layout
 
 #------------------------------------------------------------------
-# @app.callback(
-# #    Output('dt1', 'data'),
-# #    [Input('refresh-data','n_clicks')],
-# #    [State('refresh-data','n_clicks')])
-#     dash.dependencies.Output('div-1', 'children'),
-#     [dash.dependencies.Input('button', 'n_clicks')])
+@app.callback(
+Output(component_id='our_graph', component_property='figure'),
+[Input(component_id='slct_range', component_property='value')])
 
-# def refresh_data(n_clicks):
-#     if n_clicks:
-#         cryptodata2 =json['data']
-#         df=pd.json_normalize(cryptodata2) 
-#         df2=df[['name', 'symbol','quote.USD.price']]
-#         return [
-#          dt.DataTable(
-#             id='dt2',
-#             data=df2.to_dict('records'),
-#             columns=[
-#                 {"name": i, "id": i, "deletable": False, "selectable": False} for i in df2.columns
-#             ],
-#             # editable=False,
-#             # filter_action="native",
-#             # sort_action="native",
-#             # sort_mode="multi",
-#             # row_selectable="multi",
-#             # row_deletable=False,
-#             # selected_rows=[],
-#             # page_action="native",
-#             # page_current= 0,
-#             # page_size= 6,
-#             # page_action='none',
-#             # style_cell={
-#             # 'whiteSpace': 'normal'
-#             # },
-#             # fixed_rows={ 'headers': True, 'data': 0 },
-#             # virtualization=False,
-#             style_cell_conditional=[
-#                 {'if': {'column_id': 'name'},
-#                  'width': '40%', 'textAlign': 'left'},
-#                 {'if': {'column_id': 'symbol'},
-#                  'width': '30%', 'textAlign': 'left'},
-#                 {'if': {'column_id': 'quote.USD.price'},
-#                  'width': '30%', 'textAlign': 'left'},
-#             ],
-#         ),
-#     ]
+
+def build_graph(option_slctd):
+    if(option_slctd==1):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata3 =json['data']
+        dfgraph=pd.json_normalize(cryptodata3) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_1h']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_1h")
+        return fig
+    if(option_slctd==24):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata4 =json['data']
+        dfgraph=pd.json_normalize(cryptodata4) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_24h']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_24h")
+        return fig
+    
+
+
 
 
     
