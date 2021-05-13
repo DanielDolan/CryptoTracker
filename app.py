@@ -119,10 +119,10 @@ def serve_layout():
 			id='slct_range',
 			options=[ {'label': '1 Hour', 'value': 1},
 			{'label': '24 hour', 'value': 24},
-			{'label': '7 day', 'value': '7d'},
-			{'label': '30 day', 'value': '30d'},
-			{'label': '60 day', 'value': '60d'},
-			{'label': '90 day', 'value': '90d'}],
+			{'label': '7 day', 'value': 7},
+			{'label': '30 day', 'value': 30},
+			{'label': '60 day', 'value': 60},
+			{'label': '90 day', 'value': 90}],
 			value=1,
 			multi=False,
 			className="innerdropdown"
@@ -159,6 +159,35 @@ def build_graph(option_slctd):
         dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_24h']]
         fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_24h")
         return fig
+    if(option_slctd==7):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata4 =json['data']
+        dfgraph=pd.json_normalize(cryptodata4) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_7d']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_7d")
+        return fig
+    if(option_slctd==30):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata4 =json['data']
+        dfgraph=pd.json_normalize(cryptodata4) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_30d']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_30d")
+        return fig
+    if(option_slctd==60):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata4 =json['data']
+        dfgraph=pd.json_normalize(cryptodata4) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_60d']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_60d")
+        return fig
+    if(option_slctd==90):
+        json = requests.get(url, params=params, headers=headers).json()
+        cryptodata4 =json['data']
+        dfgraph=pd.json_normalize(cryptodata4) 
+        dfgraph1hr=dfgraph[['name', 'quote.USD.percent_change_90d']]
+        fig=px.line(dfgraph1hr, x="name", y="quote.USD.percent_change_90d")
+        return fig
+    
     
 
 
